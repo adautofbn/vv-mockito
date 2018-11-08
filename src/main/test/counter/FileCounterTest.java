@@ -1,11 +1,11 @@
 package counter;
 
+import analysis.UsageLog;
 import choice.SimpleWordChoice;
 import fileService.FileService;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import org.mockito.*;
 
 public class FileCounterTest {
@@ -16,6 +16,9 @@ public class FileCounterTest {
 
     @Mock
     FileService mockFileService;
+
+    @Spy
+    UsageLog log;
 
     @BeforeEach
     void init() {
@@ -71,8 +74,14 @@ public class FileCounterTest {
      */
     @Test
     void usageLogStateVerification(){
-        // A ser implementado pelo aluno.
-        throw new NotImplementedException();
+        Mockito.doReturn(false).when(mockFileService).checkFileOnRemoteRepository(Mockito.anyString());
+        FileCounter counter = new FileCounter(BOURNE_PATH, mockFileService);
+
+        counter.setUsageLog(log);
+
+        int count = counter.count(new SimpleWordChoice(WORD_CHOICE));
+
+        Assert.assertTrue(log.getUsageMap().containsKey(WORD_CHOICE));
     }
 
     /**
@@ -84,7 +93,13 @@ public class FileCounterTest {
      */
     @Test
     void usageLogBehaviourVerification(){
-        // A ser implementado pelo aluno.
-        throw new NotImplementedException();
+        Mockito.doReturn(false).when(mockFileService).checkFileOnRemoteRepository(Mockito.anyString());
+        FileCounter counter = new FileCounter(BOURNE_PATH, mockFileService);
+
+        counter.setUsageLog(log);
+
+        int count = counter.count(new SimpleWordChoice(WORD_CHOICE));
+
+        Mockito.verify(log).addStringUsage(WORD_CHOICE);
     }
 }
