@@ -82,6 +82,7 @@ public class FileCounterTest {
         int count = counter.count(new SimpleWordChoice(WORD_CHOICE));
 
         Assert.assertTrue(log.getUsageMap().containsKey(WORD_CHOICE));
+        Assert.assertTrue(log.getUsageMap().containsValue(WORD_STRING_QUANTITY_BOURNE));
     }
 
     /**
@@ -100,6 +101,6 @@ public class FileCounterTest {
 
         int count = counter.count(new SimpleWordChoice(WORD_CHOICE));
 
-        Mockito.verify(log).addStringUsage(WORD_CHOICE);
+        Mockito.verify(log, Mockito.times(WORD_STRING_QUANTITY_BOURNE)).addStringUsage(WORD_CHOICE);
     }
 }
