@@ -3,14 +3,24 @@ package counter;
 import choice.SimpleWordChoice;
 import fileService.FileService;
 import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.mockito.*;
 
 public class FileCounterTest {
 
     public static final String WORD_CHOICE = "string";
     private final int WORD_STRING_QUANTITY_BOURNE = 87;
     private final String BOURNE_PATH = "./src/main/resources/bourne.txt";
+
+    @Mock
+    FileService mockFileService;
+
+    @BeforeEach
+    void init() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     /**
      * Esse teste verifica que quando não existe um arquivo em FileService, o resultado de checkFileOnRemoteRepository
@@ -22,7 +32,11 @@ public class FileCounterTest {
      */
     @Test
     void fileServiceSemArquivoNoRemote(){
-        FileCounter counter = new FileCounter(BOURNE_PATH, FileService.getInstance());
+
+        Mockito.doReturn(false).when(mockFileService).checkFileOnRemoteRepository(Mockito.anyString());
+
+        FileCounter counter = new FileCounter(BOURNE_PATH, mockFileService);
+
         int count = counter.count(new SimpleWordChoice(WORD_CHOICE));
         Assert.assertEquals(count, WORD_STRING_QUANTITY_BOURNE);
     }
@@ -43,8 +57,9 @@ public class FileCounterTest {
      */
     @Test
     void fileServiceComArquivoNoRemote(){
-        // A ser implementado pelo aluno.
-        throw new NotImplementedException();
+        Mockito.doReturn(true).when(mockFileService).checkFileOnRemoteRepository(Mockito.anyString());
+        FileCounter counter = new FileCounter(BOURNE_PATH, mockFileService);
+        Mockito.verify(mockFileService).retrieveFileFromRemote(BOURNE_PATH);
     }
 
     /**
